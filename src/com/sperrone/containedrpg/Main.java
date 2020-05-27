@@ -23,6 +23,7 @@ public class Main {
                     newGame.setGameActive(false);
                     break;
                 case 2:
+                    //need code for fighting more than one round
                     newGame.fight(monsters.get(0));
                     break;
                 case 3:
