@@ -24,6 +24,7 @@ public class Main {
                     break;
                 case 2:
                     //need code for fighting more than one round
+                    //put that in the fight object
                     newGame.fight(monsters.get(0));
                     break;
                 case 3:
