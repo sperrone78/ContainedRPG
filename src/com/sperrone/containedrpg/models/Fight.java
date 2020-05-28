@@ -52,7 +52,6 @@ public class Fight {
 
         if (monsterNewHealth <= 0) {
             //Return Monster dead
-            System.out.println("Monster has died!");
             monster.setCurrentHealth(0);
             return 1;
         } else {

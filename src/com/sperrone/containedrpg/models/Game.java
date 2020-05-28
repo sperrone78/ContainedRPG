@@ -63,8 +63,42 @@ public class Game {
 
     public void fight (Monster monster) {
         Fight newFight = new Fight (newPlayer, monster);
+        Scanner input = new Scanner(System.in);
+
         int outcome = 0;
-        outcome = newFight.fightRound();
-        System.out.println("Outcome was : " + outcome);
+
+        //Fight! Rounds until one actor dies or player flees
+        while (outcome < 1) {
+            System.out.println("Fight Round #" + newFight.getRounds());
+            System.out.println("Choose: Fight(F) or Run(R)");
+            String fightOption = input.nextLine().toUpperCase();
+            switch (fightOption) {
+                case "FIGHT":
+                case "F":
+                    outcome = newFight.fightRound();
+                    break;
+                case "RUN":
+                case "R":
+                    outcome = 3;
+                    break;
+            }
+        }
+
+        //Figure out what to do after the fight
+        switch (outcome) {
+            case 1: //Player Wins
+                System.out.println(newPlayer.getName() + " defeated " + monster.getName() + "!");
+                //update newPlayer.setExp to check for level up
+                //update for loot + gold
+                break;
+            case 2: //Monster Wins
+                System.out.println(newPlayer.getName() + " was defeated by " + monster.getName() + ".");
+                //update revive player somewhere
+                break;
+            case 3: //Player Flees
+                //Probably need to add code to rand chance to flee - for now it succeeds
+                System.out.println(newPlayer.getName() + " flees from " + monster.getName() + ".");
+                break;
+        }
     }
 }
