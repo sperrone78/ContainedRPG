@@ -57,7 +57,7 @@ public class Game {
     public void setGameMonsters() {
         Monster firstMonster = new Monster("Shrek", "Ogre",
                 100, 100, 10,10,
-                10,10);
+                10,10, 10, 1);
         getGameMonsters().add(firstMonster);
     }
 
@@ -70,12 +70,16 @@ public class Game {
         //Fight! Rounds until one actor dies or player flees
         while (outcome < 1) {
             System.out.println("Fight Round #" + newFight.getRounds());
+            System.out.println(newPlayer.getName() + " (" + newPlayer.getCurrentHealth() + "/" +
+                    newPlayer.getMaxHealth() + ")"  + " vs " + monster.getName() + " (" + monster.getCurrentHealth() +
+                    "/" + monster.getMaxHealth() + ")");
             System.out.println("Choose: Fight(F) or Run(R)");
             String fightOption = input.nextLine().toUpperCase();
             switch (fightOption) {
                 case "FIGHT":
                 case "F":
                     outcome = newFight.fightRound();
+                    newFight.increaseRounds();
                     break;
                 case "RUN":
                 case "R":
@@ -88,8 +92,8 @@ public class Game {
         switch (outcome) {
             case 1: //Player Wins
                 System.out.println(newPlayer.getName() + " defeated " + monster.getName() + "!");
-                //update newPlayer.setExp to check for level up
-                //update for loot + gold
+                newPlayer.gainEssence(monster.getEssenceDropped());
+                newPlayer.gainGold(monster.getGoldDropped());
                 break;
             case 2: //Monster Wins
                 System.out.println(newPlayer.getName() + " was defeated by " + monster.getName() + ".");

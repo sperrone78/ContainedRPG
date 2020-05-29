@@ -31,7 +31,7 @@ public class Main {
                     System.out.println("Look at all that cool stuff");
                     break;
                 case 4:
-                    System.out.println(newPlayer.getInfo());
+                    newPlayer.displayPlayer();
                     break;
                 default:
                     System.out.println("I didn't understand your choice - try again");

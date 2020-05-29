@@ -1,29 +1,62 @@
 package com.sperrone.containedrpg.models;
 
+import com.sperrone.containedrpg.models.spells.FireSpell;
+import com.sperrone.containedrpg.models.spells.FrostSpell;
+import com.sperrone.containedrpg.models.spells.HealSpell;
+import com.sperrone.containedrpg.models.spells.Spell;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Player extends Actor {
     private String charClass;
-    private int currentExp;
-    private int expToLevel;
+    private int essence;
+    private HashMap<String, Integer> essenceToLevel = new HashMap<>();
+    private ArrayList<Spell> spellList = new ArrayList<>();
     private int level;
     private int maxHealth;
     private int currentHealth;
-    private int attackModifier;
-    private int defModifier;
+    private int weaponAttackModifier; //weapon
+    private int armorDefModifier;
     private int speed;
-    private int strength;
+    private int meleeAttackMod; //essence level
+    private int rangedAttackMod;
+    private int magicMod;
+    private int physicalShield;
+    private int magicShield;
+    private int charisma;
+    private int gold;
 
     public Player (String startName, String startClass) {
         super(startName);
-        level = 1;
-        charClass = startClass;
-        currentExp = 0;
-        expToLevel = 10;
-        maxHealth = 100;
-        currentHealth = 100;
-        attackModifier = 10;
-        defModifier = 10;
+        setLevel(1);
+        setCharClass(startClass);
+        setEssenceToLevel("melee shield", 10);
+        setEssenceToLevel("magic shield", 10);
+        setEssenceToLevel("ranged attack", 10);
+        setEssenceToLevel("magic attack", 10);
+        setEssenceToLevel("melee attack", 10);
+        setEssenceToLevel("vitality", 10);
+        setEssenceToLevel("charisma", 10);
+        setEssence(0);
+        setMaxHealth(100);
+        setCurrentHealth(100);
+        setWeaponAttackModifier(10);
+        setArmorDefModifier(10);
         setSpeed(20);
-        setStrength(10);
+        setMeleeAttackMod(10);
+        setRangedAttackMod(10);
+        setMagicMod(10);
+        setPhysicalShield(0);
+        setMagicShield(0);
+        setCharisma(10);
+        gold=1;
+        Spell healSpell = new HealSpell("Minor Heal", "Heal", 10);
+        Spell fireball = new FireSpell("Fireball", "Damage", 10,1);
+        Spell frostBolt = new FrostSpell("Frostbolt", "Damage", 10,10);
+        addSpell(healSpell);
+        addSpell(fireball);
+        addSpell(frostBolt);
     }
 
     public String getCharClass() {
@@ -42,20 +75,20 @@ public class Player extends Actor {
         this.level = level;
     }
 
-    public int getCurrentExp() {
-        return currentExp;
+    public int getEssence() {
+        return essence;
     }
 
-    public void setCurrentExp(int currentExp) {
-        this.currentExp = currentExp;
+    public void setEssence(int essence) {
+        this.essence = essence;
     }
 
-    public int getExpToLevel() {
-        return expToLevel;
+    public void gainEssence (int essence) {
+        this.essence += essence;
     }
 
-    public void setExpToLevel(int expToLevel) {
-        this.expToLevel = expToLevel;
+    public void spendEssence(String stat) {
+            System.out.println("Leveling a stat");
     }
 
     public int getMaxHealth() {
@@ -74,28 +107,28 @@ public class Player extends Actor {
         this.currentHealth = currentHealth;
     }
 
-    public int getAttackModifier() {
-        return attackModifier;
+    public int getWeaponAttackModifier() {
+        return weaponAttackModifier;
     }
 
-    public void setAttackModifier(int attackModifier) {
-        this.attackModifier = attackModifier;
+    public void setWeaponAttackModifier(int weaponAttackModifier) {
+        this.weaponAttackModifier = weaponAttackModifier;
     }
 
-    public int getDefModifier() {
-        return defModifier;
+    public int getArmorDefModifier() {
+        return armorDefModifier;
     }
 
-    public void setDefModifier(int defModifier) {
-        this.defModifier = defModifier;
+    public void setArmorDefModifier(int armorDefModifier) {
+        this.armorDefModifier = armorDefModifier;
     }
 
-    public int getStrength() {
-        return strength;
+    public int getMeleeAttackMod() {
+        return meleeAttackMod;
     }
 
-    public void setStrength(int strength) {
-        this.strength = strength;
+    public void setMeleeAttackMod(int meleeAttackMod) {
+        this.meleeAttackMod = meleeAttackMod;
     }
 
     public int getSpeed() {
@@ -104,5 +137,92 @@ public class Player extends Actor {
 
     public void setSpeed(int speed) {
         this.speed = speed;
+    }
+
+    public int getRangedAttackMod() {
+        return rangedAttackMod;
+    }
+
+    public void setRangedAttackMod(int rangedAttackMod) {
+        this.rangedAttackMod = rangedAttackMod;
+    }
+
+    public int getMagicMod() {
+        return magicMod;
+    }
+
+    public void setMagicMod(int magicMod) {
+        this.magicMod = magicMod;
+    }
+
+    public int getPhysicalShield() {
+        return physicalShield;
+    }
+
+    public void setPhysicalShield(int physicalShield) {
+        this.physicalShield = physicalShield;
+    }
+
+    public int getMagicShield() {
+        return magicShield;
+    }
+
+    public void setMagicShield(int magicShield) {
+        this.magicShield = magicShield;
+    }
+
+    public int getCharisma() {
+        return charisma;
+    }
+
+    public void setCharisma(int charisma) {
+        this.charisma = charisma;
+    }
+
+    public HashMap<String, Integer> getEssenceToLevel() {
+        return essenceToLevel;
+    }
+
+    public void setEssenceToLevel(String stat, int statValue) {
+        this.essenceToLevel.put(stat, statValue);
+    }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public void gainGold(int gold) {
+        this.gold += gold;
+    }
+
+    public void displayPlayer () {
+        String output = "Character Info: " + this.getName() + "\n" +
+                "Class: " + this.getCharClass() + "\n" +
+                "Current Unspent Essence: " + this.getEssence() + "\n" +
+                "Health: " + this.getCurrentHealth() + "/" + this.getMaxHealth() + "\n" +
+                "Melee Attack Bonus: " + this.getMeleeAttackMod() +  "\n" +
+                "Magic Attack Bonus: " + this.getMagicMod() + "\n" +
+                "Ranged Attack Bonus: " + this.getRangedAttackMod() + "\n" +
+                "Physical Shield: " + this.getPhysicalShield() + "\n" +
+                "Magic Shield: " + this.getMagicShield() + "\n" +
+                "Spells" + this.displaySpells() + "\n" +
+                "Gold: " + this.getGold();
+        System.out.println(output);
+    }
+
+    public ArrayList<Spell> getSpellList() {
+        return spellList;
+    }
+
+    public void addSpell (Spell spell) {
+        spellList.add(spell);
+    }
+
+    public String displaySpells () {
+        return spellList.toString();
+    }
+
+    public void levelUpSpell(String spellName) {
+        //find spellName in Hashmap
     }
 }

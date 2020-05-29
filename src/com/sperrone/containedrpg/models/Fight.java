@@ -1,6 +1,6 @@
 package com.sperrone.containedrpg.models;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
+import java.util.Map;
 import java.util.Random;
 
 public class Fight {
@@ -21,6 +21,9 @@ public class Fight {
 
     private void setRounds(int rounds) {
         this.rounds = rounds;
+    }
+    public void increaseRounds () {
+        this.rounds ++;
     }
 
     private int monsterAttackRound () {
@@ -45,7 +48,7 @@ public class Fight {
     private int playerAttackRound () {
         Random rand = new Random();
         double playerRandMod = rand.nextDouble();
-        double playerAttackBase = player.getAttackModifier() + player.getStrength();
+        double playerAttackBase = player.getWeaponAttackModifier() + player.getMeleeAttackMod();
         double playerAttack = playerAttackBase * playerRandMod;
         int monsterNewHealth = monster.getCurrentHealth() - (int) playerAttack;
         System.out.println(monster.getName() + " was hit for " + (int)playerAttack);
@@ -56,7 +59,6 @@ public class Fight {
             return 1;
         } else {
             monster.setCurrentHealth(monsterNewHealth);
-            System.out.println(monster.getName() + " : " + monster.getCurrentHealth() + " / " + monster.getMaxHealth());
             return 0;
         }
     }
@@ -64,12 +66,37 @@ public class Fight {
     public int fightRound () {
         int outcome = 0; //0 = both alive, 1 = monster dead, 2 = player dead
         //see who attacks first
+        outcome = resolveDebuffs();
+
+        //add code here to ask what type of attack (Weapon vs Spell)
         if (player.getSpeed() >= monster.getSpeed()) {
             //Player Attacks First
             outcome = (playerAttackRound() == 0) ? monsterAttackRound() : 1;
         } else {
             //Monster Attacks First
             outcome = (monsterAttackRound() == 0) ? playerAttackRound() : 2;
+        }
+        return outcome;
+    }
+
+    private int resolveDebuffs () {
+        int outcome = 0;
+        for (Map.Entry debuff : monster.getDebuffs().entrySet()) {
+            String debuffName = (String)debuff.getKey();
+            int debuffValue = ((int)debuff.getValue());
+            switch (debuffName) {
+                case "Slowed":
+                    int currentSpeed = monster.getSpeed();
+                    monster.setSpeed(currentSpeed/debuffValue);
+                case "Smolder":
+                    int mch = monster.getCurrentHealth();
+                    if (mch < debuffValue) {
+                        monster.setCurrentHealth(0);
+                        outcome = 1;
+                    } else {
+                        monster.setCurrentHealth(mch-debuffValue);
+                    }
+            }
         }
         return outcome;
     }

@@ -1,5 +1,8 @@
 package com.sperrone.containedrpg.models;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Monster extends Actor{
     private int maxHealth;
     private int currentHealth;
@@ -8,10 +11,13 @@ public class Monster extends Actor{
     private int defModifier;
     private int speed;
     private int strength;
+    private int essenceDropped;
+    private int goldDropped;
+    private HashMap<String, Integer> debuffs = new HashMap<>();
 
     public Monster (String startName, String startMonsterType, int startCurrentHealth,
                     int startMaxHealth, int startAttackModifier, int startDefModifier,
-                    int startSpeed, int startStrength)  {
+                    int startSpeed, int startStrength, int startEssenceDropped, int goldDropped)  {
         super(startName);
         setMaxHealth(startMaxHealth);
         setCurrentHealth(startCurrentHealth);
@@ -21,6 +27,8 @@ public class Monster extends Actor{
         super.setCurrentLocation("Forest");
         setSpeed(startSpeed);
         setStrength(startStrength);
+        setEssenceDropped(startEssenceDropped);
+        setGoldDropped(goldDropped);
     }
 
     public int getMaxHealth() {
@@ -77,5 +85,29 @@ public class Monster extends Actor{
 
     public void setStrength(int strength) {
         this.strength = strength;
+    }
+
+    public int getEssenceDropped() {
+        return essenceDropped;
+    }
+
+    public void setEssenceDropped(int essenceDropped) {
+        this.essenceDropped = essenceDropped;
+    }
+
+    public int getGoldDropped() {
+        return goldDropped;
+    }
+
+    public void setGoldDropped(int goldDropped) {
+        this.goldDropped = goldDropped;
+    }
+
+    public HashMap<String, Integer> getDebuffs() {
+        return debuffs;
+    }
+
+    public void addDebuff(String debuff, int tick) {
+        this.debuffs.put(debuff, tick);
     }
 }
