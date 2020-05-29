@@ -1,7 +1,11 @@
 package com.sperrone.containedrpg.models;
 
+import com.sperrone.containedrpg.models.spells.Spell;
+
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Fight {
 
@@ -63,20 +67,68 @@ public class Fight {
         }
     }
 
+    private Spell getSpell (String spellCast) {
+        ArrayList<Spell> spellList = player.getSpellList();
+        for (Spell spell : spellList) {
+            if (spell.getName().equals(spellCast)) {
+                return spell;
+            }
+        }
+        return null;
+    }
+
+    private int playerSpellAttackRound (String spellCast) {
+        Spell spell = getSpell(spellCast);
+
+        System.out.println("Spell is " + spell.getClass());
+//        int monsterNewHealth = monster.getCurrentHealth() - (int) playerAttack;
+//        System.out.println(monster.getName() + " was hit for " + (int)playerAttack);
+//
+//        if (monsterNewHealth <= 0) {
+//            //Return Monster dead
+//            monster.setCurrentHealth(0);
+//            return 1;
+//        } else {
+//            monster.setCurrentHealth(monsterNewHealth);
+//            return 0;
+//        }
+        return 0;
+    }
+
     public int fightRound () {
         int outcome = 0; //0 = both alive, 1 = monster dead, 2 = player dead
         //see who attacks first
         outcome = resolveDebuffs();
 
-        //add code here to ask what type of attack (Weapon vs Spell)
-        if (player.getSpeed() >= monster.getSpeed()) {
-            //Player Attacks First
-            outcome = (playerAttackRound() == 0) ? monsterAttackRound() : 1;
-        } else {
-            //Monster Attacks First
-            outcome = (monsterAttackRound() == 0) ? playerAttackRound() : 2;
+        System.out.println("Attack with your weapon (W) or with a spell(S)?");
+        Scanner input = new Scanner(System.in);
+        String attackOption = input.nextLine().toUpperCase();
+        switch (attackOption) {
+            case "WEAPON":
+            case "W":
+                if (player.getSpeed() >= monster.getSpeed()) {
+                    //Player Attacks First
+                    outcome = (playerAttackRound() == 0) ? monsterAttackRound() : 1;
+                } else {
+                    //Monster Attacks First
+                    outcome = (monsterAttackRound() == 0) ? playerAttackRound() : 2;
+                }
+                return outcome;
+            case "SPELL":
+            case "S":
+                System.out.println("Which Spell would you like to cast?");
+                System.out.println(player.getSpellList());
+                String spellOption = input.nextLine();
+                if (player.getSpeed() >= monster.getSpeed()) {
+                    //Player Attacks First
+                    outcome = (playerSpellAttackRound(spellOption) == 0) ? monsterAttackRound() : 1;
+                } else {
+                    //Monster Attacks First
+                    outcome = (monsterAttackRound() == 0) ? playerAttackRound() : 2;
+                }
+                return outcome;
         }
-        return outcome;
+        return 0;
     }
 
     private int resolveDebuffs () {
@@ -100,5 +152,4 @@ public class Fight {
         }
         return outcome;
     }
-
 }
