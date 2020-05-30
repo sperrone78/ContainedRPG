@@ -13,8 +13,7 @@ public class Main {
         Game newGame = new Game();
         Player newPlayer = newGame.getNewPlayer();
         ArrayList<Monster> monsters = newGame.getGameMonsters();
-        System.out.println(newPlayer.getName() + " is a level " +
-                newPlayer.getLevel() + " " + newPlayer.getCharClass());
+        System.out.println(newPlayer.getName() + " is a " + newPlayer.getCharClass());
 
         while (newGame.getGameActive()) {
             int nextAction = newGame.getNextAction();
@@ -32,6 +31,9 @@ public class Main {
                     break;
                 case 4:
                     newPlayer.displayPlayer();
+                    break;
+                case 5:
+                    newGame.spendEssenceInterface();
                     break;
                 default:
                     System.out.println("I didn't understand your choice - try again");

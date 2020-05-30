@@ -110,4 +110,8 @@ public class Monster extends Actor{
     public void addDebuff(String debuff, int tick) {
         this.debuffs.put(debuff, tick);
     }
+
+    public void clearDebuffs () {
+        this.debuffs.clear();
+    }
 }

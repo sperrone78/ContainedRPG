@@ -4,13 +4,13 @@ import com.sperrone.containedrpg.models.spells.Spell;
 
 public class FrostSpell extends Spell {
     private int spellDamage;
-    private int slowRounds;
+    private int slowAmount;
     private String debuffName;
 
-    public FrostSpell (String startName, String startSpellType, int startSpellDamage, int startSlowRounds) {
+    public FrostSpell (String startName, String startSpellType, int startSpellDamage, int startSlowAmount) {
         super(startName, startSpellType);
         setSpellDamage(startSpellDamage);
-        setSlowRounds(startSlowRounds);
+        setSlowAmount(startSlowAmount);
         setDebuffName("Slowed");
     }
 
@@ -22,12 +22,12 @@ public class FrostSpell extends Spell {
         this.spellDamage = spellDamage;
     }
 
-    public int getSlowRounds() {
-        return slowRounds;
+    public int getSlowAmount() {
+        return slowAmount;
     }
 
-    public void setSlowRounds(int slowRounds) {
-        this.slowRounds = slowRounds;
+    public void setSlowAmount(int slowAmount) {
+        this.slowAmount = slowAmount;
     }
 
     public String getDebuffName() {

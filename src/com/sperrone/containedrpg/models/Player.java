@@ -13,7 +13,6 @@ public class Player extends Actor {
     private int essence;
     private HashMap<String, Integer> essenceToLevel = new HashMap<>();
     private ArrayList<Spell> spellList = new ArrayList<>();
-    private int level;
     private int maxHealth;
     private int currentHealth;
     private int weaponAttackModifier; //weapon
@@ -29,31 +28,30 @@ public class Player extends Actor {
 
     public Player (String startName, String startClass) {
         super(startName);
-        setLevel(1);
         setCharClass(startClass);
-        setEssenceToLevel("melee shield", 10);
+        setEssenceToLevel("physical shield", 10);
         setEssenceToLevel("magic shield", 10);
         setEssenceToLevel("ranged attack", 10);
-        setEssenceToLevel("magic attack", 10);
+        setEssenceToLevel("magic bonus", 10);
         setEssenceToLevel("melee attack", 10);
         setEssenceToLevel("vitality", 10);
         setEssenceToLevel("charisma", 10);
         setEssence(0);
         setMaxHealth(100);
         setCurrentHealth(100);
-        setWeaponAttackModifier(10);
-        setArmorDefModifier(10);
+        setWeaponAttackModifier(1);
+        setArmorDefModifier(1);
         setSpeed(20);
-        setMeleeAttackMod(10);
-        setRangedAttackMod(10);
-        setMagicMod(10);
+        setMeleeAttackMod(1);
+        setRangedAttackMod(1);
+        setMagicMod(1);
         setPhysicalShield(0);
         setMagicShield(0);
-        setCharisma(10);
+        setCharisma(1);
         gold=1;
-        Spell healSpell = new HealSpell("Minor Heal", "Heal", 10);
-        Spell fireball = new FireSpell("Fireball", "Damage", 10,1);
-        Spell frostBolt = new FrostSpell("Frostbolt", "Damage", 10,10);
+        Spell healSpell = new HealSpell("Minor Heal", "Heal", 100);
+        Spell fireball = new FireSpell("Fireball", "Damage", 10,5);
+        Spell frostBolt = new FrostSpell("Frostbolt", "Damage", 15,2);
         addSpell(healSpell);
         addSpell(fireball);
         addSpell(frostBolt);
@@ -65,14 +63,6 @@ public class Player extends Actor {
 
     public void setCharClass(String charClass) {
         this.charClass = charClass;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
     }
 
     public int getEssence() {
@@ -88,7 +78,25 @@ public class Player extends Actor {
     }
 
     public void spendEssence(String stat) {
-            System.out.println("Leveling a stat");
+        System.out.println("Leveling: " + stat);
+        boolean isStatPresent = this.essenceToLevel.containsKey(stat);
+        if (!isStatPresent) {
+            System.out.println("Unknown Stat");
+        } else {
+            int essenceNeeded = this.essenceToLevel.get(stat);
+            if (this.essenceToLevel.get(stat) <= this.essence) {
+                System.out.println("We have enough essence!");
+                this.essence -= essenceNeeded;
+                this.essenceToLevel.put(stat, this.essenceToLevel.get(stat) + 10);
+                switch (stat) {
+                    case "melee attack":
+                        setMeleeAttackMod(this.getMeleeAttackMod() + 5);
+                        break;
+                }
+            } else {
+                System.out.println("Insufficient Essence.");
+            }
+        }
     }
 
     public int getMaxHealth() {
@@ -201,7 +209,7 @@ public class Player extends Actor {
                 "Current Unspent Essence: " + this.getEssence() + "\n" +
                 "Health: " + this.getCurrentHealth() + "/" + this.getMaxHealth() + "\n" +
                 "Melee Attack Bonus: " + this.getMeleeAttackMod() +  "\n" +
-                "Magic Attack Bonus: " + this.getMagicMod() + "\n" +
+                "Magic Bonus: " + this.getMagicMod() + "\n" +
                 "Ranged Attack Bonus: " + this.getRangedAttackMod() + "\n" +
                 "Physical Shield: " + this.getPhysicalShield() + "\n" +
                 "Magic Shield: " + this.getMagicShield() + "\n" +
@@ -220,9 +228,5 @@ public class Player extends Actor {
 
     public String displaySpells () {
         return spellList.toString();
-    }
-
-    public void levelUpSpell(String spellName) {
-        //find spellName in Hashmap
     }
 }

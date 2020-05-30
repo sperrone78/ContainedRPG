@@ -1,6 +1,7 @@
 package com.sperrone.containedrpg.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Game {
@@ -25,7 +26,7 @@ public class Game {
         //Add Monsters to the Game
         gameMonsters = new ArrayList<>();
         setGameMonsters();
-        System.out.println(gameMonsters);
+        //System.out.println(gameMonsters);
 
         //Activate the Game
         gameActive = true;
@@ -34,7 +35,7 @@ public class Game {
     public int getNextAction () {
         System.out.println("What would you like to do " + newPlayer.getName() + " (" + newPlayer.getCurrentHealth() +
                 "/" + newPlayer.getMaxHealth() + ") ?");
-        System.out.println("Type: 1: Exit, 2: Fight, 3: Inventory, 4: Char");
+        System.out.println("Type: 1: Exit, 2: Fight, 3: Inventory, 4: Char, 5: Spend Essence");
         Scanner input = new Scanner(System.in);
         int nextAction = input.nextInt();
         return nextAction;
@@ -56,9 +57,25 @@ public class Game {
 
     public void setGameMonsters() {
         Monster firstMonster = new Monster("Shrek", "Ogre",
-                100, 100, 10,10,
+                10, 10, 10,10,
                 10,10, 10, 1);
         getGameMonsters().add(firstMonster);
+    }
+
+    public void spendEssenceInterface () {
+        HashMap essenceToLevel = newPlayer.getEssenceToLevel();
+        System.out.println("Available Essence Categories: (amount needed) \n" +
+                "Melee Attack: ("+ essenceToLevel.get("melee attack") + ")\n" +
+                "Ranged Attack: (" + essenceToLevel.get("ranged attack") + ")\n" +
+                "Magic Bonus: (" + essenceToLevel.get("magic bonus") + ")\n" +
+                "Physical Shield: (" + essenceToLevel.get("physical shield") + ")\n" +
+                "Magic Shield: (" + essenceToLevel.get("magic shield") + ")\n" +
+                "Vitality: (" + essenceToLevel.get("vitality") + ")\n" +
+                "Charisma: (" + essenceToLevel.get("charisma") + ")");
+        System.out.println("Please Choose a Category:");
+        Scanner input = new Scanner(System.in);
+        String essenceOption = input.nextLine().toLowerCase();
+        newPlayer.spendEssence(essenceOption);
     }
 
     public void fight (Monster monster) {
@@ -92,8 +109,13 @@ public class Game {
         switch (outcome) {
             case 1: //Player Wins
                 System.out.println(newPlayer.getName() + " defeated " + monster.getName() + "!");
+                System.out.println(newPlayer.getName() + " gains: \n" +
+                        monster.getEssenceDropped() + " Essence \n" +
+                        monster.getGoldDropped() + " Gold");
                 newPlayer.gainEssence(monster.getEssenceDropped());
                 newPlayer.gainGold(monster.getGoldDropped());
+                monster.setCurrentHealth(10);
+                monster.clearDebuffs();
                 break;
             case 2: //Monster Wins
                 System.out.println(newPlayer.getName() + " was defeated by " + monster.getName() + ".");

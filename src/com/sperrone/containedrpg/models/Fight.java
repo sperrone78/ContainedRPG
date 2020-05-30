@@ -1,5 +1,8 @@
 package com.sperrone.containedrpg.models;
 
+import com.sperrone.containedrpg.models.spells.FireSpell;
+import com.sperrone.containedrpg.models.spells.FrostSpell;
+import com.sperrone.containedrpg.models.spells.HealSpell;
 import com.sperrone.containedrpg.models.spells.Spell;
 
 import java.util.ArrayList;
@@ -79,20 +82,43 @@ public class Fight {
 
     private int playerSpellAttackRound (String spellCast) {
         Spell spell = getSpell(spellCast);
+        if (spell == null) {
+            System.out.println("Unknown Spell - no damage done!");
+            return 0;
+        }
+        int spellDamage = 0;
+        String spellClass = spell.getClass().toString();
+        if (spellClass.equals("class com.sperrone.containedrpg.models.spells.FireSpell")) {
+            spellDamage = ((FireSpell)spell).getSpellDamage();
+            int spellTick = ((FireSpell)spell).getTickDamage();
+            System.out.println(monster.getName() + " is now Smoldering for " + spellTick + " per round");
+            monster.addDebuff("Smolder", spellTick);
+        } else if (spellClass.equals("class com.sperrone.containedrpg.models.spells.FrostSpell")) {
+            spellDamage = ((FrostSpell)spell).getSpellDamage();
+            int slowedAmount = ((FrostSpell)spell).getSlowAmount();
+            System.out.println(monster.getName() + " is now slowed for " + slowedAmount);
+            monster.addDebuff("Slowed", slowedAmount);
+        } else if (spellClass.equals("class com.sperrone.containedrpg.models.spells.HealSpell")) {
+            int healAmount = ((HealSpell)spell).getHealAmount();
+            if ((healAmount + player.getCurrentHealth()) > player.getMaxHealth()) {
+                player.setCurrentHealth(player.getMaxHealth());
+            } else {
+                player.setCurrentHealth(player.getCurrentHealth() + healAmount);
+            }
+            System.out.println(player.getName() + " healed for " + healAmount);
+            return 0;
+        }
+        int monsterNewHealth = monster.getCurrentHealth() - spellDamage;
+        System.out.println(monster.getName() + " was hit for " + spellDamage);
 
-        System.out.println("Spell is " + spell.getClass());
-//        int monsterNewHealth = monster.getCurrentHealth() - (int) playerAttack;
-//        System.out.println(monster.getName() + " was hit for " + (int)playerAttack);
-//
-//        if (monsterNewHealth <= 0) {
-//            //Return Monster dead
-//            monster.setCurrentHealth(0);
-//            return 1;
-//        } else {
-//            monster.setCurrentHealth(monsterNewHealth);
-//            return 0;
-//        }
-        return 0;
+        if (monsterNewHealth <= 0) {
+            //Return Monster dead
+            monster.setCurrentHealth(0);
+            return 1;
+        } else {
+            monster.setCurrentHealth(monsterNewHealth);
+            return 0;
+        }
     }
 
     public int fightRound () {
@@ -100,7 +126,7 @@ public class Fight {
         //see who attacks first
         outcome = resolveDebuffs();
 
-        System.out.println("Attack with your weapon (W) or with a spell(S)?");
+        System.out.println("Attack with your weapon (W) or with a spell (S)?");
         Scanner input = new Scanner(System.in);
         String attackOption = input.nextLine().toUpperCase();
         switch (attackOption) {
@@ -140,6 +166,8 @@ public class Fight {
                 case "Slowed":
                     int currentSpeed = monster.getSpeed();
                     monster.setSpeed(currentSpeed/debuffValue);
+                    System.out.println(monster.getName() + " is slowed this round");
+                    break;
                 case "Smolder":
                     int mch = monster.getCurrentHealth();
                     if (mch < debuffValue) {
@@ -147,7 +175,10 @@ public class Fight {
                         outcome = 1;
                     } else {
                         monster.setCurrentHealth(mch-debuffValue);
+                        System.out.println(monster.getName() + " smolders - life now: " +
+                                monster.getCurrentHealth() + "/" + monster.getMaxHealth());
                     }
+                    break;
             }
         }
         return outcome;
