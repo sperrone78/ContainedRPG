@@ -70,10 +70,9 @@ public class Fight {
         int minDamage = player.getMinWeaponDamage();
         int maxDamage = player.getMaxWeaponDamage();
         int playerAttack = rand.nextInt((maxDamage - minDamage) + 1) + minDamage;
-        System.out.println("Player Min: " + minDamage + " Player Max: " + maxDamage + " Rand: " + playerAttack);
-//        double playerRandMod = rand.nextDouble();
-//        double playerAttackBase = player.getWeaponDamage() + player.getMeleeAttackMod();
-//        double playerAttack = playerAttackBase * playerRandMod;
+        playerAttack += player.getMeleeAttackMod();
+//        System.out.println("Player Min: " + minDamage + " Player Max: " + maxDamage + " Rand: " + playerAttack +
+//                "MAM: " + player.getMeleeAttackMod());
         int monsterNewHealth = monster.getCurrentHealth() - playerAttack;
         System.out.println(monster.getName() + " was hit for " + playerAttack);
 
