@@ -1,10 +1,5 @@
 package com.sperrone.containedrpg.models;
 
-import com.sperrone.containedrpg.models.spells.FireSpell;
-import com.sperrone.containedrpg.models.spells.FrostSpell;
-import com.sperrone.containedrpg.models.spells.HealSpell;
-import com.sperrone.containedrpg.models.spells.Spell;
-
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
@@ -38,27 +33,49 @@ public class Fight {
         double monsterRandMod = rand.nextDouble();
         double monsterAttackBase = monster.getAttackModifier() + monster.getStrength();
         double monsterAttack = monsterAttackBase * monsterRandMod;
-        int playerNewHealth = player.getCurrentHealth() - (int) monsterAttack;
-        System.out.println(player.getName() + " was hit for " + (int)monsterAttack);
-
-        if (playerNewHealth <= 0) {
-            //Return Player dead
-            System.out.println(player.getName() + " has died!");
-            player.setCurrentHealth(0);
-            return 2;
-        } else {
-            player.setCurrentHealth(playerNewHealth);
+        if ((int)monsterAttack < player.getPhysicalShield()) {
+            System.out.println(player.getName() + "'s Physical Shield absorbed all the damage");
             return 0;
+        } else if (player.getPhysicalShield() == 0) {
+            int playerNewHealth = player.getCurrentHealth() - (int) monsterAttack;
+            System.out.println(player.getName() + " was hit for " + (int)monsterAttack + ".");
+            if (playerNewHealth <= 0) {
+                //Return Player dead
+                System.out.println(player.getName() + " has died!");
+                player.setCurrentHealth(0);
+                return 2;
+            } else {
+                player.setCurrentHealth(playerNewHealth);
+                return 0;
+            }
+        } else {
+            int playerNewHealth = player.getCurrentHealth() - ( (int) monsterAttack - player.getPhysicalShield() );
+            System.out.println(player.getName() + " was hit for " + (int)monsterAttack + ". Physical Shield blocked " +
+                    player.getPhysicalShield() + " damage.");
+            if (playerNewHealth <= 0) {
+                //Return Player dead
+                System.out.println(player.getName() + " has died!");
+                player.setCurrentHealth(0);
+                return 2;
+            } else {
+                player.setCurrentHealth(playerNewHealth);
+                return 0;
+            }
         }
     }
 
     private int playerAttackRound () {
         Random rand = new Random();
-        double playerRandMod = rand.nextDouble();
-        double playerAttackBase = player.getWeaponAttackModifier() + player.getMeleeAttackMod();
-        double playerAttack = playerAttackBase * playerRandMod;
-        int monsterNewHealth = monster.getCurrentHealth() - (int) playerAttack;
-        System.out.println(monster.getName() + " was hit for " + (int)playerAttack);
+        //get min and max damage of weapon
+        int minDamage = player.getMinWeaponDamage();
+        int maxDamage = player.getMaxWeaponDamage();
+        int playerAttack = rand.nextInt((maxDamage - minDamage) + 1) + minDamage;
+        System.out.println("Player Min: " + minDamage + " Player Max: " + maxDamage + " Rand: " + playerAttack);
+//        double playerRandMod = rand.nextDouble();
+//        double playerAttackBase = player.getWeaponDamage() + player.getMeleeAttackMod();
+//        double playerAttack = playerAttackBase * playerRandMod;
+        int monsterNewHealth = monster.getCurrentHealth() - playerAttack;
+        System.out.println(monster.getName() + " was hit for " + playerAttack);
 
         if (monsterNewHealth <= 0) {
             //Return Monster dead
@@ -86,28 +103,58 @@ public class Fight {
             System.out.println("Unknown Spell - no damage done!");
             return 0;
         }
-        int spellDamage = 0;
-        String spellClass = spell.getClass().toString();
-        if (spellClass.equals("class com.sperrone.containedrpg.models.spells.FireSpell")) {
-            spellDamage = ((FireSpell)spell).getSpellDamage();
-            int spellTick = ((FireSpell)spell).getTickDamage();
-            System.out.println(monster.getName() + " is now Smoldering for " + spellTick + " per round");
-            monster.addDebuff("Smolder", spellTick);
-        } else if (spellClass.equals("class com.sperrone.containedrpg.models.spells.FrostSpell")) {
-            spellDamage = ((FrostSpell)spell).getSpellDamage();
-            int slowedAmount = ((FrostSpell)spell).getSlowAmount();
-            System.out.println(monster.getName() + " is now slowed for " + slowedAmount);
-            monster.addDebuff("Slowed", slowedAmount);
-        } else if (spellClass.equals("class com.sperrone.containedrpg.models.spells.HealSpell")) {
-            int healAmount = ((HealSpell)spell).getHealAmount();
-            if ((healAmount + player.getCurrentHealth()) > player.getMaxHealth()) {
-                player.setCurrentHealth(player.getMaxHealth());
-            } else {
-                player.setCurrentHealth(player.getCurrentHealth() + healAmount);
-            }
-            System.out.println(player.getName() + " healed for " + healAmount);
-            return 0;
+        int spellDamage = player.getMagicMod();
+        String spellType = spell.getSpellType();
+
+        switch (spellType) {
+            case "FireSpell":
+                System.out.println("Fireball = " + spell.toString());
+                spellDamage += spell.getSpellValue();
+                System.out.println("spell damage = " + spellDamage);
+                int spellTick = spell.getTickValue() + player.getMagicMod()/2;
+                System.out.println(monster.getName() + " is now Smoldering for " + spellTick + " per round");
+                monster.addDebuff("Smolder", spellTick);
+                break;
+            case "FrostSpell":
+                spellDamage += spell.getSpellValue();
+                int slowedAmount = spell.getTickValue();
+                System.out.println(monster.getName() + " is now slowed for " + slowedAmount);
+                monster.addDebuff("Slowed", slowedAmount);
+                break;
+            case "HealSpell":
+                int healAmount = spell.getTickValue();
+                if ((healAmount + player.getCurrentHealth()) > player.getMaxHealth()) {
+                    player.setCurrentHealth(player.getMaxHealth());
+                } else {
+                    player.setCurrentHealth(player.getCurrentHealth() + healAmount);
+                }
+                System.out.println(player.getName() + " healed for " + healAmount);
+                return 0;
         }
+
+//        String spellClass = spell.getClass().toString();
+//        System.out.println(spellClass);
+//        if (spellClass.equals("class com.sperrone.containedrpg.models.spells.FireSpell")) {
+//            spellDamage += ((FireSpell)spell).getSpellDamage();
+//            System.out.println("spell damage = " + spellDamage);
+//            int spellTick = ((FireSpell)spell).getTickDamage() + player.getMagicMod()/2;
+//            System.out.println(monster.getName() + " is now Smoldering for " + spellTick + " per round");
+//            monster.addDebuff("Smolder", spellTick);
+//        } else if (spellClass.equals("class com.sperrone.containedrpg.models.spells.FrostSpell")) {
+//            spellDamage += ((FrostSpell)spell).getSpellDamage();
+//            int slowedAmount = ((FrostSpell)spell).getSlowAmount();
+//            System.out.println(monster.getName() + " is now slowed for " + slowedAmount);
+//            monster.addDebuff("Slowed", slowedAmount);
+//        } else if (spellClass.equals("class com.sperrone.containedrpg.models.spells.HealSpell")) {
+//            int healAmount = ((HealSpell)spell).getHealAmount();
+//            if ((healAmount + player.getCurrentHealth()) > player.getMaxHealth()) {
+//                player.setCurrentHealth(player.getMaxHealth());
+//            } else {
+//                player.setCurrentHealth(player.getCurrentHealth() + healAmount);
+//            }
+//            System.out.println(player.getName() + " healed for " + healAmount);
+//            return 0;
+//        }
         int monsterNewHealth = monster.getCurrentHealth() - spellDamage;
         System.out.println(monster.getName() + " was hit for " + spellDamage);
 

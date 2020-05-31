@@ -10,10 +10,10 @@ public class Game {
     private ArrayList<Monster> gameMonsters;
 
     public Game () {
-        buildNewGame();
+
     }
 
-    private void buildNewGame () {
+    public void buildNewGame () {
         //Create the Player
         System.out.println("Welcome to the Game!");
         System.out.println("Please Enter your name: ");
@@ -28,16 +28,28 @@ public class Game {
         setGameMonsters();
         //System.out.println(gameMonsters);
 
+        //Add Sword as Item and Build Backpack
         //Activate the Game
         gameActive = true;
     }
 
     public int getNextAction () {
-        System.out.println("What would you like to do " + newPlayer.getName() + " (" + newPlayer.getCurrentHealth() +
-                "/" + newPlayer.getMaxHealth() + ") ?");
-        System.out.println("Type: 1: Exit, 2: Fight, 3: Inventory, 4: Char, 5: Spend Essence");
         Scanner input = new Scanner(System.in);
-        int nextAction = input.nextInt();
+        boolean isValid = false;
+        int nextAction=4;
+        do {
+            System.out.println("What would you like to do " + newPlayer.getName() + " (" + newPlayer.getCurrentHealth() +
+                    "/" + newPlayer.getMaxHealth() + ") ?");
+            System.out.println("Type: 1: Exit, 2: Fight, 3: Inventory, 4: Char, 5: Spend Essence, 6: Save Game, " +
+                    "7: Show Equipment");
+            if (input.hasNextInt()) {
+                nextAction = input.nextInt();
+                isValid = true;
+            } else {
+                input.nextLine();
+                System.out.println("Please enter a number between 1 and 5");
+            }
+        } while (!isValid);
         return nextAction;
     }
 
@@ -57,7 +69,7 @@ public class Game {
 
     public void setGameMonsters() {
         Monster firstMonster = new Monster("Shrek", "Ogre",
-                10, 10, 10,10,
+                1, 10, 10,10,
                 10,10, 10, 1);
         getGameMonsters().add(firstMonster);
     }
