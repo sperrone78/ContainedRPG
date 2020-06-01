@@ -34,7 +34,7 @@ public class Item {
         this.name = name;
     }
 
-    public double getCost() {
+    public int getCost() {
         return cost;
     }
 

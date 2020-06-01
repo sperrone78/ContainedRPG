@@ -34,6 +34,18 @@ public class Game {
         gameActive = true;
     }
 
+    public int getInputInt (String preText) {
+        Scanner input = new Scanner(System.in);
+        System.out.println(preText);
+        return input.nextInt();
+    }
+
+    public String getInputString (String preText) {
+        Scanner input = new Scanner(System.in);
+        System.out.println(preText);
+        return input.nextLine();
+    }
+
     public int getNextAction () {
         Scanner input = new Scanner(System.in);
         boolean isValid = false;
@@ -85,16 +97,12 @@ public class Game {
                 "Magic Shield: (" + essenceToLevel.get("magic shield") + ")\n" +
                 "Vitality: (" + essenceToLevel.get("vitality") + ")\n" +
                 "Charisma: (" + essenceToLevel.get("charisma") + ")");
-        System.out.println("Please Choose a Category:");
-        Scanner input = new Scanner(System.in);
-        String essenceOption = input.nextLine().toLowerCase();
+        String essenceOption = getInputString("Please Choose a Category:").toLowerCase();
         newPlayer.spendEssence(essenceOption);
     }
 
     public void fight (Monster monster) {
         Fight newFight = new Fight (newPlayer, monster);
-        Scanner input = new Scanner(System.in);
-
         int outcome = 0;
 
         //Fight! Rounds until one actor dies or player flees
@@ -103,8 +111,7 @@ public class Game {
             System.out.println(newPlayer.getName() + " (" + newPlayer.getCurrentHealth() + "/" +
                     newPlayer.getMaxHealth() + ")"  + " vs " + monster.getName() + " (" + monster.getCurrentHealth() +
                     "/" + monster.getMaxHealth() + ")");
-            System.out.println("Choose: Fight(F) or Run(R)");
-            String fightOption = input.nextLine().toUpperCase();
+            String fightOption = getInputString("Choose: Fight(F) or Run(R)").toUpperCase();
             switch (fightOption) {
                 case "FIGHT":
                 case "F":
@@ -151,17 +158,42 @@ public class Game {
 
     public void displayStore() {
         ArrayList<Item> inventory = this.startingStore.getInventory();
-        int itemNumber = 1;
-        System.out.println("#: Name(Cost)");
-        System.out.println("----------");
+        Boolean inStore = true;
 
-        for (Item item : inventory) {
-            System.out.println(itemNumber + ":" + item.getName() + "(" + item.getCost() + ")");
-            itemNumber++;
+        while (inStore) {
+            System.out.println("#: Name(Cost)");
+            System.out.println("----------");
+            int itemNumber = 1;
+            for (Item item : inventory) {
+                System.out.println(itemNumber + ":" + item.getName() + "(" + item.getCost() + ")");
+                itemNumber++;
+            }
+            System.out.println("0: Exit Store");
+            System.out.println(newPlayer.getName() + " has " + newPlayer.getGold() + " gold");
+
+            int storeOption = getInputInt("Which item number would you like to purchase? Press '0' to Exit");
+            if (storeOption == 0) {
+                inStore = false;
+            } else if (storeOption > inventory.size()) {
+                System.out.println("Invalid option chosen");
+            } else {
+                Item itemSelected = inventory.get(storeOption-1);
+                Boolean canPurchase = newPlayer.checkIfCanPurchase(itemSelected);
+                if (canPurchase) {
+                    String validateOption = getInputString("Purchase " + itemSelected.getName() + "? (Y or N)");
+                    switch (validateOption.toUpperCase()) {
+                        case "Y":
+                            newPlayer.addItemToBackpack(itemSelected,1);
+                            newPlayer.spendGold(itemSelected.getCost());
+                            break;
+                        default:
+                            System.out.println("Make another choice");
+                    }
+                } else {
+                    System.out.println("Unable to purchase - insufficient gold");
+                }
+            }
         }
 
-        System.out.println("Which item number would you like to purchase?");
-        Scanner input = new Scanner(System.in);
-        int option = input.nextInt();
     }
 }

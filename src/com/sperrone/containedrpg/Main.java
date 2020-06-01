@@ -108,6 +108,7 @@ public class Main {
                     break;
                 case 8: //Display Store
                     newGame.displayStore();
+                    break;
                 default:
                     System.out.println("I didn't understand your choice - try again");
             }

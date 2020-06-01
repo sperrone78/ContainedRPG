@@ -220,6 +220,14 @@ public class Player extends Actor {
         this.gold += gold;
     }
 
+    public void spendGold (int gold) {
+        if (gold > this.gold) {
+            this.gold = 0;
+        } else {
+            this.gold -= gold;
+        }
+    }
+
     public void displayPlayer () {
         String output = "Character Info: " + this.getName() + "\n" +
                 "Class: " + this.getCharClass() + "\n" +
@@ -265,7 +273,6 @@ public class Player extends Actor {
         } else {
             this.backpack.put(newItem, quantity);
         }
-        this.backpack.put(newItem,quantity);
     }
 
     public HashMap<String, Item> getEquipped() {
@@ -305,4 +312,13 @@ public class Player extends Actor {
         } else return 0;
     }
 
+    public Boolean checkIfCanPurchase (Item item) {
+        System.out.println("Trying to purchase: " + item.getName());
+        Boolean canPurchase = true;
+
+        if (!(this.getGold() >= item.getCost())) {
+            canPurchase = false;
+        }
+        return canPurchase;
+    }
 }
