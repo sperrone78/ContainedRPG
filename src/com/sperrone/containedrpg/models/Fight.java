@@ -131,29 +131,6 @@ public class Fight {
                 return 0;
         }
 
-//        String spellClass = spell.getClass().toString();
-//        System.out.println(spellClass);
-//        if (spellClass.equals("class com.sperrone.containedrpg.models.spells.FireSpell")) {
-//            spellDamage += ((FireSpell)spell).getSpellDamage();
-//            System.out.println("spell damage = " + spellDamage);
-//            int spellTick = ((FireSpell)spell).getTickDamage() + player.getMagicMod()/2;
-//            System.out.println(monster.getName() + " is now Smoldering for " + spellTick + " per round");
-//            monster.addDebuff("Smolder", spellTick);
-//        } else if (spellClass.equals("class com.sperrone.containedrpg.models.spells.FrostSpell")) {
-//            spellDamage += ((FrostSpell)spell).getSpellDamage();
-//            int slowedAmount = ((FrostSpell)spell).getSlowAmount();
-//            System.out.println(monster.getName() + " is now slowed for " + slowedAmount);
-//            monster.addDebuff("Slowed", slowedAmount);
-//        } else if (spellClass.equals("class com.sperrone.containedrpg.models.spells.HealSpell")) {
-//            int healAmount = ((HealSpell)spell).getHealAmount();
-//            if ((healAmount + player.getCurrentHealth()) > player.getMaxHealth()) {
-//                player.setCurrentHealth(player.getMaxHealth());
-//            } else {
-//                player.setCurrentHealth(player.getCurrentHealth() + healAmount);
-//            }
-//            System.out.println(player.getName() + " healed for " + healAmount);
-//            return 0;
-//        }
         int monsterNewHealth = monster.getCurrentHealth() - spellDamage;
         System.out.println(monster.getName() + " was hit for " + spellDamage);
 

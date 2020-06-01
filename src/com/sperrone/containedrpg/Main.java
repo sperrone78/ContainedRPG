@@ -1,10 +1,7 @@
 package com.sperrone.containedrpg;
 
 import com.google.gson.Gson;
-import com.sperrone.containedrpg.models.Game;
-import com.sperrone.containedrpg.models.Monster;
-import com.sperrone.containedrpg.models.Player;
-import com.sperrone.containedrpg.models.Spell;
+import com.sperrone.containedrpg.models.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -109,6 +106,8 @@ public class Main {
                 case 7:
                     newPlayer.displayEquipment();
                     break;
+                case 8: //Display Store
+                    newGame.displayStore();
                 default:
                     System.out.println("I didn't understand your choice - try again");
             }

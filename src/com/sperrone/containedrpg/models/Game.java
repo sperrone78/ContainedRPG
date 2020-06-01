@@ -8,6 +8,7 @@ public class Game {
     private Player newPlayer;
     private Boolean gameActive;
     private ArrayList<Monster> gameMonsters;
+    private Store startingStore;
 
     public Game () {
 
@@ -27,8 +28,8 @@ public class Game {
         gameMonsters = new ArrayList<>();
         setGameMonsters();
         //System.out.println(gameMonsters);
-
-        //Add Sword as Item and Build Backpack
+        NPC storeOwner = new NPC();
+        setStartingStore(new Store("Test Store", "General",storeOwner));
         //Activate the Game
         gameActive = true;
     }
@@ -138,5 +139,29 @@ public class Game {
                 System.out.println(newPlayer.getName() + " flees from " + monster.getName() + ".");
                 break;
         }
+    }
+
+    public Store getStartingStore() {
+        return startingStore;
+    }
+
+    public void setStartingStore(Store startingStore) {
+        this.startingStore = startingStore;
+    }
+
+    public void displayStore() {
+        ArrayList<Item> inventory = this.startingStore.getInventory();
+        int itemNumber = 1;
+        System.out.println("#: Name(Cost)");
+        System.out.println("----------");
+
+        for (Item item : inventory) {
+            System.out.println(itemNumber + ":" + item.getName() + "(" + item.getCost() + ")");
+            itemNumber++;
+        }
+
+        System.out.println("Which item number would you like to purchase?");
+        Scanner input = new Scanner(System.in);
+        int option = input.nextInt();
     }
 }
