@@ -53,8 +53,14 @@ public class Game {
         do {
             System.out.println("What would you like to do " + newPlayer.getName() + " (" + newPlayer.getCurrentHealth() +
                     "/" + newPlayer.getMaxHealth() + ") ?");
-            System.out.println("Type: 1: Exit, 2: Fight, 3: Inventory, 4: Char, 5: Spend Essence, 6: Save Game, " +
-                    "7: Show Equipment");
+            System.out.println("1: Exit \n" +
+                    "2: Fight\n" +
+                    "3: Inventory\n" +
+                    "4: Character Information\n" +
+                    "5: Spend Essence\n" +
+                    "6: Save Game\n" +
+                    "7: Show Equipment\n" +
+                    "8: Visit the Store");
             if (input.hasNextInt()) {
                 nextAction = input.nextInt();
                 isValid = true;
@@ -147,7 +153,25 @@ public class Game {
                 break;
         }
     }
-
+    public void backpackChoice() {
+        Boolean activeBackpack = true;
+        while (activeBackpack) {
+            newPlayer.displayBackpack();
+            String backpackChoice = getInputString("What item would you like to use or equip? " +
+                    "Type 0 to go back to the main menu");
+            if (backpackChoice.equals("0")) {
+                activeBackpack = false;
+            } else {
+                HashMap<Item, Integer> backpack = newPlayer.getBackpack();
+                boolean isItemInBackpack = backpack.containsKey(backpackChoice);
+                if (isItemInBackpack) {
+                    System.out.println("I found the item i n the backpack");
+                } else {
+                    System.out.println("I don't recognize that item, please try again");
+                }
+            }
+        }
+    }
     public Store getStartingStore() {
         return startingStore;
     }

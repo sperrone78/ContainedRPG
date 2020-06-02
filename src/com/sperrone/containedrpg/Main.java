@@ -92,7 +92,7 @@ public class Main {
                     newGame.fight(monsters.get(0));
                     break;
                 case 3:
-                    newPlayer.displayBackpack();
+                    newGame.backpackChoice();
                     break;
                 case 4:
                     newPlayer.displayPlayer();
