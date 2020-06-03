@@ -162,8 +162,8 @@ public class Game {
             if (backpackChoice.equals("0")) {
                 activeBackpack = false;
             } else {
-                HashMap<Item, Integer> backpack = newPlayer.getBackpack();
-                boolean isItemInBackpack = backpack.containsKey(backpackChoice);
+                ArrayList<Item> backpack = newPlayer.getBackpack();
+                boolean isItemInBackpack = backpack.contains(backpackChoice);
                 if (isItemInBackpack) {
                     System.out.println("I found the item i n the backpack");
                 } else {
@@ -207,7 +207,7 @@ public class Game {
                     String validateOption = getInputString("Purchase " + itemSelected.getName() + "? (Y or N)");
                     switch (validateOption.toUpperCase()) {
                         case "Y":
-                            newPlayer.addItemToBackpack(itemSelected,1);
+                            newPlayer.addItemToBackpack(itemSelected);
                             newPlayer.spendGold(itemSelected.getCost());
                             break;
                         default:

@@ -9,12 +9,13 @@ public class Item {
     private int itemMinValue; //damage, armor, consumable value
     private int itemMaxValue;
     private String quality;
+    private int quantity;
     private Boolean isStackable;
     private int weight;
 
 
     public Item (String startName, int startCost, int startSellValue, String startItemType, int startItemMinValue,
-                 int startItemMaxValue, String startQuality, Boolean startIsStackable, int startWeight) {
+                 int startItemMaxValue, String startQuality, Boolean startIsStackable, int startWeight, int startQuantity) {
         setName(startName);
         setCost(startCost);
         setSellValue(startSellValue);
@@ -24,6 +25,7 @@ public class Item {
         setQuality(startQuality);
         setIsStackable(startIsStackable);
         setWeight(startWeight);
+        setQuantity(startQuantity);
     }
 
     public String getName() {
@@ -96,5 +98,13 @@ public class Item {
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

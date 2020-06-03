@@ -9,7 +9,7 @@ public class Player extends Actor {
     private int essence;
     private HashMap<String, Integer> essenceToLevel = new HashMap<>();
     private ArrayList<Spell> spellList = new ArrayList<>();
-    private HashMap<Item, Integer> backpack = new HashMap<>();
+    private ArrayList<Item> backpack = new ArrayList<>();
     private HashMap<String, Item> equipped = new HashMap<>();
     private int maxHealth;
     private int currentHealth;
@@ -54,13 +54,13 @@ public class Player extends Actor {
         addSpell(frostBolt);
 
         Item startSword = new Item("Rusty Dagger", 1,1,"1HWeapon",
-                1,3,"Poor", false,1);
+                1,3,"Poor", false,1,1);
 
         equipItem(startSword,"1HWeapon");
         Item apple = new Item("Apple", 1,1,"Consumable",
-                1,3,"Poor", true,1);
+                1,3,"Poor", true,1,4);
 
-        addItemToBackpack(apple,4);
+        addItemToBackpack(apple);
     }
 
     public String getCharClass() {
@@ -255,24 +255,12 @@ public class Player extends Actor {
         return spellList.toString();
     }
 
-    public HashMap<Item, Integer> getBackpack() {
+    public ArrayList<Item> getBackpack() {
         return backpack;
     }
 
-    public void addItemToBackpack(Item newItem, int quantity) {
-        if (this.backpack.containsKey(newItem)) {
-            if (newItem.getIsStackable()) {
-                this.backpack.put(newItem, this.backpack.get(newItem) + quantity);
-            } else {
-                int counter = 0;
-                do {
-                    this.backpack.put(newItem, 1);
-                    counter++;
-                } while (counter < quantity);
-            }
-        } else {
-            this.backpack.put(newItem, quantity);
-        }
+    public void addItemToBackpack(Item newItem) {
+        this.backpack.add(newItem);
     }
 
     public HashMap<String, Item> getEquipped() {
@@ -280,14 +268,14 @@ public class Player extends Actor {
     }
 
     public void displayBackpack() {
-        this.backpack.forEach((k,v) -> System.out.println(k.getName() + "("+v+")"));
+        this.backpack.forEach((item) -> System.out.println(item.getName() + " ("+ item.getQuantity()+")"));
     }
 
     public void equipItem(Item newItem, String slot) {
         if (this.equipped.containsKey(slot)) {
             Item oldItem = this.equipped.get(slot);
             //replacing another item
-            addItemToBackpack(oldItem,1);
+            addItemToBackpack(oldItem);
         }
         this.equipped.put(slot, newItem);
     }

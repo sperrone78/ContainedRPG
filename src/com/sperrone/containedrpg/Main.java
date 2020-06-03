@@ -34,11 +34,6 @@ public class Main {
             Scanner myReader = new Scanner(saveFile);
             String data = myReader.nextLine();
             Game newGame = gson.fromJson(data, Game.class);
-            Player updatePlayer = newGame.getNewPlayer();
-            ArrayList<Spell> spellList = updatePlayer.getSpellList();
-            for (Spell spell : spellList) {
-
-            }
             return newGame;
         } catch (FileNotFoundException e) {
             System.out.println("Couldn't find save file");
